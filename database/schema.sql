@@ -2,13 +2,27 @@ CREATE DATABASE IF NOT EXISTS infratrack;
 
 USE infratrack;
 
-CREATE TABLE IF NOT EXISTS servers (
+CREATE TABLE servers (
 
     id INT AUTO_INCREMENT PRIMARY KEY,
 
     server_name VARCHAR(100) NOT NULL,
 
-    environment ENUM('Development','Testing','Production') NOT NULL,
+    server_role ENUM(
+        'Web Server',
+        'Application Server',
+        'Database Server',
+        'Cache Server',
+        'Load Balancer',
+        'Monitoring Server',
+        'Bastion Host'
+    ) NOT NULL,
+
+    environment ENUM(
+        'Development',
+        'Testing',
+        'Production'
+    ) NOT NULL,
 
     operating_system VARCHAR(50) NOT NULL,
 
@@ -16,7 +30,10 @@ CREATE TABLE IF NOT EXISTS servers (
 
     owner VARCHAR(100) NOT NULL,
 
-    status ENUM('Running','Stopped') DEFAULT 'Running',
+    status ENUM(
+        'Running',
+        'Stopped'
+    ) DEFAULT 'Running',
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 

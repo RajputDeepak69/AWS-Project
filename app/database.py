@@ -38,29 +38,32 @@ def add_server(server):
     cursor = db.cursor()
 
     cursor.execute("""
-        INSERT INTO servers
-        (server_name,environment,operating_system,ip_address,owner,status)
-
-        VALUES(%s,%s,%s,%s,%s,%s)
-
-    """,
-
+      INSERT INTO servers
+      (
+          server_name,
+          server_role,
+          environment,
+          operating_system,
+          ip_address,
+          owner,
+          status
+      )
+    VALUES(%s,%s,%s,%s,%s,%s,%s)
+    """),
     (
-
-        server["server_name"],
-        server["environment"],
-        server["operating_system"],
-        server["ip_address"],
-        server["owner"],
-        server["status"]
-
-    ))
+    server["server_name"],
+    server["server_role"],
+    server["environment"],
+    server["operating_system"],
+    server["ip_address"],
+    server["owner"],
+    server["status"]
+    )
 
     db.commit()
 
     cursor.close()
     db.close()
-
 
 def delete_server(server_id):
 
