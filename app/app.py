@@ -44,14 +44,15 @@ def add_server():
 
     if request.method=="POST":
 
-        server={
+        server = {
 
-            "server_name":request.form["server_name"],
-            "environment":request.form["environment"],
-            "operating_system":request.form["operating_system"],
-            "ip_address":request.form["ip_address"],
-            "owner":request.form["owner"],
-            "status":request.form["status"]
+            "server_name": request.form["server_name"],
+            "server_role": request.form["server_role"],
+            "environment": request.form["environment"],
+            "operating_system": request.form["operating_system"],
+            "ip_address": request.form["ip_address"],
+            "owner": request.form["owner"],
+            "status": request.form["status"]
 
         }
 
