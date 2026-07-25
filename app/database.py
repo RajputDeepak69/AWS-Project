@@ -49,8 +49,7 @@ def add_server(server):
           status
       )
     VALUES(%s,%s,%s,%s,%s,%s,%s)
-    """),
-    (
+    """, (
     server["server_name"],
     server["server_role"],
     server["environment"],
@@ -58,7 +57,7 @@ def add_server(server):
     server["ip_address"],
     server["owner"],
     server["status"]
-    )
+    ))
 
     db.commit()
 
@@ -68,9 +67,7 @@ def add_server(server):
 def delete_server(server_id):
 
     db = get_connection()
-
     cursor = db.cursor()
-
     cursor.execute(
 
         "DELETE FROM servers WHERE id=%s",
