@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}
+Inventory | InfraTrack
+{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">Server Inventory</h1>
+
+<p class="page-subtitle">
+    View and manage infrastructure assets.
+</p>
+
+<!-- Search & Add Button -->
+
+<div class="search-bar">
+
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="Search by server name, role, owner or IP..."
+    >
+
+    <a href="{{ url_for('add_server') }}" class="btn-primary">
+        + Add Server
+    </a>
+
+</div>
+
+<div class="card table-card">
+
+<table id="serverTable">
+
+    <thead>
+
+        <tr>
+
+            <th>Name</th>
+
+            <th>Role</th>
+
+            <th>Environment</th>
+
+            <th>OS</th>
+
+            <th>IP Address</th>
+
+            <th>Owner</th>
+
+            <th>Status</th>
+
+            <th>Action</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+    {% if servers %}
+
+        {% for server in servers %}
+
+        <tr>
+
+            <td>
+
+                <strong>{{ server.server_name }}</strong>
+
+            </td>
+
+            <td>{{ server.server_role }}</td>
+
+            <td>
+
+                {% if server.environment=="Production" %}
+
+                    <span class="badge production">
+
+                        {{ server.environment }}
+
+                    </span>
+
+                {% elif server.environment=="Development" %}
+
+                    <span class="badge development">
+
+                        {{ server.environment }}
+
+                    </span>
+
+                {% else %}
+
+                    <span class="badge testing">
+
+                        {{ server.environment }}
+
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+            <td>{{ server.operating_system }}</td>
+
+            <td>{{ server.ip_address }}</td>
+
+            <td>{{ server.owner }}</td>
+
+            <td>
+
+                {% if server.status=="Running" %}
+
+                    <span class="badge running">
+
+                        Running
+
+                    </span>
+
+                {% else %}
+
+                    <span class="badge stopped">
+
+                        Stopped
+
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                <a
+                    href="{{ url_for('delete', id=server.id) }}"
+                    class="btn-danger"
+                    onclick="return confirm('Delete this server?');"
+                >
+                    Delete
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    {% else %}
+
+        <tr>
+
+            <td colspan="8" style="text-align:center;padding:40px;">
+
+                No servers found.
+
+            </td>
+
+        </tr>
+
+    {% endif %}
+
+    </tbody>
+
+</table>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+const searchInput = document.getElementById("searchInput");
+
+searchInput.addEventListener("keyup", function () {
+
+    const filter = this.value.toLowerCase();
+
+    const rows = document.querySelectorAll("#serverTable tbody tr");
+
+    rows.forEach(row => {
+
+        const text = row.innerText.toLowerCase();
+
+        row.style.display = text.includes(filter)
+            ? ""
+            : "none";
+
+    });
+
+});
+
+</script>
+
+{% endblock %}
