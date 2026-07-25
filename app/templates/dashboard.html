@@ -1,127 +1,353 @@
 {% extends "base.html" %}
 
+{% block title %}
+Dashboard | InfraTrack
+{% endblock %}
+
 {% block content %}
 
-<h1 class="page-title">
+<h1 class="page-title">Dashboard</h1>
 
-Infrastructure Dashboard
+<p class="page-subtitle">
+    Infrastructure overview and recent server activity.
+</p>
 
-</h1>
+<!-- ===========================
+     Statistics
+============================ -->
 
-<div class="card-container">
+<div class="stats-grid">
 
-    <div class="card">
+    <div class="stat-card">
 
-        <h3>Total Servers</h3>
+        <h4>Total Servers</h4>
 
-        <h1>{{ stats.total_servers }}</h1>
-
-    </div>
-
-    <div class="card">
-
-        <h3>Running</h3>
-
-        <h1>{{ stats.running }}</h1>
+        <h2>{{ stats.total }}</h2>
 
     </div>
 
-    <div class="card">
+    <div class="stat-card">
 
-        <h3>Stopped</h3>
+        <h4>Running</h4>
 
-        <h1>{{ stats.stopped }}</h1>
-
-    </div>
-
-    <div class="card">
-
-        <h3>Production</h3>
-
-        <h1>{{ stats.production }}</h1>
+        <h2>{{ stats.running }}</h2>
 
     </div>
 
-    <div class="card">
+    <div class="stat-card">
 
-        <h3>Testing</h3>
+        <h4>Production</h4>
 
-        <h1>{{ stats.testing }}</h1>
+        <h2>{{ stats.production }}</h2>
 
     </div>
 
-    <div class="card">
+    <div class="stat-card">
 
-        <h3>Development</h3>
+        <h4>Development</h4>
 
-        <h1>{{ stats.development }}</h1>
+        <h2>{{ stats.development }}</h2>
 
     </div>
 
 </div>
 
-<div class="table-container">
+<!-- ===========================
+     Chart + Recent Servers
+============================ -->
 
-<h2>
+<div class="grid-2">
 
-Recent Servers
+    <div class="card">
 
-</h2>
+        <h3>Environment Distribution</h3>
+
+        <div class="chart-box">
+
+            <canvas id="environmentChart"></canvas>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h3>Quick Summary</h3>
+
+        <table>
+
+            <tbody>
+
+            <tr>
+
+                <td>Total Servers</td>
+
+                <td><strong>{{ stats.total }}</strong></td>
+
+            </tr>
+
+            <tr>
+
+                <td>Running</td>
+
+                <td>
+
+                    <span class="badge running">
+
+                        {{ stats.running }}
+
+                    </span>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>Production</td>
+
+                <td>
+
+                    <span class="badge production">
+
+                        {{ stats.production }}
+
+                    </span>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>Development</td>
+
+                <td>
+
+                    <span class="badge development">
+
+                        {{ stats.development }}
+
+                    </span>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
 
 <br>
 
-<table>
+<!-- ===========================
+     Recent Servers
+============================ -->
 
-<tr>
+<div class="card table-card">
 
-<th>Server</th>
+    <h3 style="margin-bottom:20px;">
 
-<th>Role</th>
+        Recent Servers
 
-<th>Environment</th>
+    </h3>
 
-<th>Status</th>
+    <table>
 
-</tr>
+        <thead>
 
-{% for server in servers %}
+        <tr>
 
-<tr>
+            <th>Name</th>
 
-<td>{{ server.server_name }}</td>
+            <th>Role</th>
 
-<td>{{ server.server_role }}</td>
+            <th>Environment</th>
 
-<td>{{ server.environment }}</td>
+            <th>Operating System</th>
 
-<td>
+            <th>Status</th>
 
-{% if server.status=="Running" %}
+        </tr>
 
-<span class="running">
+        </thead>
 
-🟢 Running
+        <tbody>
 
-</span>
+        {% if servers %}
 
-{% else %}
+            {% for server in servers %}
 
-<span class="stopped">
+            <tr>
 
-🔴 Stopped
+                <td>
 
-</span>
+                    <strong>
 
-{% endif %}
+                        {{ server.server_name }}
 
-</td>
+                    </strong>
 
-</tr>
+                </td>
 
-{% endfor %}
+                <td>
 
-</table>
+                    {{ server.server_role }}
+
+                </td>
+
+                <td>
+
+                    {% if server.environment=="Production" %}
+
+                        <span class="badge production">
+
+                            {{ server.environment }}
+
+                        </span>
+
+                    {% elif server.environment=="Development" %}
+
+                        <span class="badge development">
+
+                            {{ server.environment }}
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge testing">
+
+                            {{ server.environment }}
+
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {{ server.operating_system }}
+
+                </td>
+
+                <td>
+
+                    {% if server.status=="Running" %}
+
+                        <span class="badge running">
+
+                            Running
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge stopped">
+
+                            Stopped
+
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        {% else %}
+
+            <tr>
+
+                <td colspan="5" style="text-align:center;padding:30px;">
+
+                    No servers found.
+
+                </td>
+
+            </tr>
+
+        {% endif %}
+
+        </tbody>
+
+    </table>
 
 </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+const ctx = document.getElementById('environmentChart');
+
+new Chart(ctx,{
+
+    type:'pie',
+
+    data:{
+
+        labels:[
+
+            'Production',
+
+            'Development'
+
+        ],
+
+        datasets:[{
+
+            data:[
+
+                {{ stats.production }},
+
+                {{ stats.development }}
+
+            ],
+
+            backgroundColor:[
+
+                '#8b5cf6',
+
+                '#2563eb'
+
+            ],
+
+            borderWidth:0
+
+        }]
+
+    },
+
+    options:{
+
+        responsive:true,
+
+        maintainAspectRatio:false,
+
+        plugins:{
+
+            legend:{
+
+                position:'bottom'
+
+            }
+
+        }
+
+    }
+
+});
+
+</script>
 
 {% endblock %}
