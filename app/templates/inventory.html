@@ -21,11 +21,6 @@ Inventory | InfraTrack
         id="searchInput"
         placeholder="Search by server name, role, owner or IP..."
     >
-
-    <a href="{{ url_for('add_server') }}" class="btn-primary">
-        + Add Server
-    </a>
-
 </div>
 
 <div class="card table-card">
@@ -131,6 +126,11 @@ Inventory | InfraTrack
             </td>
 
             <td>
+                <a
+                    href="{{ url_for('edit_server', id=server.id) }}"
+                    class="btn-outline">
+                    Edit
+                </a>
 
                 <a
                     href="{{ url_for('delete', id=server.id) }}"
