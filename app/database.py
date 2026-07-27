@@ -64,6 +64,48 @@ def add_server(server):
     cursor.close()
     db.close()
 
+def get_server(server_id):
+    db = get_connection()
+    cursor = db.cursor(dictionary=true)
+    cursor.execute(
+        "SELECT * FROM servers WHERE id=%s",
+        (server_id,)
+    )
+    server = cursror.fetchone()
+    cursor.close()
+    db.close()
+
+    return server
+
+def update_server(server_id,server):
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("""
+    UPDATE servers
+    SET  server_name=%s,
+         server_role=%s,
+        environment=%s,
+        operating_system=%s,
+        ip_address=%s,
+        owner=%s,
+        status=%s
+
+    WHERE id=%s
+    """,(
+        server["server_name"],
+        server["server_role"],
+        server["environment"],
+        server["operating_system"],
+        server["ip_address"],
+        server["owner"],
+        server["status"],
+        server_id
+    )
+    )
+    db.commit()
+    cursor.close()
+    db.close()
+
 def delete_server(server_id):
 
     db = get_connection()

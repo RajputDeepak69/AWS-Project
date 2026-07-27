@@ -57,6 +57,34 @@ def add_server():
 
     return render_template("add_server.html")
 
+@app.route("/edit/<int:id>", methods=["GET", "POST"])
+def edit_server(id):
+
+    if request.method == "POST":
+
+        server = {
+
+            "server_name": request.form["server_name"],
+            "server_role": request.form["server_role"],
+            "environment": request.form["environment"],
+            "operating_system": request.form["operating_system"],
+            "ip_address": request.form["ip_address"],
+            "owner": request.form["owner"],
+            "status": request.form["status"]
+
+        }
+
+        database.update_server(id, server)
+
+        return redirect(url_for("inventory"))
+
+    server = database.get_server(id)
+
+    return render_template(
+        "edit_server.html",
+        server=server
+    )
+
 @app.route("/delete/<int:id>")
 
 def delete(id):
