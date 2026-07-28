@@ -66,12 +66,12 @@ def add_server(server):
 
 def get_server(server_id):
     db = get_connection()
-    cursor = db.cursor(dictionary=true)
+    cursor = db.cursor(dictionary=True)
     cursor.execute(
         "SELECT * FROM servers WHERE id=%s",
         (server_id,)
     )
-    server = cursror.fetchone()
+    server = cursor.fetchone()
     cursor.close()
     db.close()
 
